@@ -1,0 +1,41 @@
+name: Production read-only smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 6 * * 1-5"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: akallatorget-bots-production-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TARGET_ENV: production
+      PRODUCTION_BASE_URL: ${{ secrets.PRODUCTION_BASE_URL }}
+      ENABLE_STAGING_MUTATIONS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:production
+      - name: Upload production smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: akallatorget-production-smoke-evidence
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
