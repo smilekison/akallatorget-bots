@@ -11,9 +11,9 @@ test('customer can discover menu and account journeys', async ({ page }) => {
 });
 
 test('basket add control works when the menu exposes one', async ({ page }) => {
-  await openHome(page);
-  await clickCandidate(page, ['menu', 'order', 'food']);
-  const add = page.getByRole('button', { name: /add to basket|add to cart|add item/i }).first();
+  await page.goto('/bestall/');
+  await expect(page.locator('body')).toBeVisible();
+  const add = page.getByRole('button', { name: /lägg till|add to basket|add to cart|add item/i }).first();
   if (!await add.isVisible().catch(() => false)) test.skip(true, 'No accessible add-to-basket control; inspect trace to tune locators.');
   await add.click();
   await expect(page.locator('body')).toBeVisible();
@@ -22,13 +22,13 @@ test('basket add control works when the menu exposes one', async ({ page }) => {
 });
 
 test('product customization options can be changed when exposed', async ({ page }) => {
-  await openHome(page);
-  await clickCandidate(page, ['menu', 'order', 'food']);
-  const customize = page.getByRole('button', { name: /customi[sz]e|options|choose|edit/i }).first();
+  await page.goto('/bestall/');
+  await expect(page.locator('body')).toBeVisible();
+  const customize = page.getByRole('button', { name: /anpassa|customi[sz]e|val|options|choose|edit/i }).first();
   if (!await customize.isVisible().catch(() => false)) test.skip(true, 'No accessible customization control detected.');
   await customize.click();
   await expect(page.locator('body')).toBeVisible();
-  const option = page.locator('input[type="checkbox"], input[type="radio"], [role="checkbox"], [role="radio"], select').first();
+  const option = page.locator('input[type="checkbox"], input[type="radio"], [role="checkbox"], [role="radio"], select, button[aria-pressed]').first();
   if (await option.isVisible().catch(() => false)) {
     const tag = await option.evaluate(el => el.tagName.toLowerCase());
     if (tag === 'select') {
