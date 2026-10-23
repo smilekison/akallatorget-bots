@@ -23,7 +23,7 @@ export default defineConfig({
   testDir: './tests',
   testMatch: target === 'production'
     ? ['production-smoke.spec.js']
-    : ['staging-smoke.spec.js', 'customer.spec.js', 'operations.spec.js', 'responsive.spec.js', 'accessibility.spec.js', 'ui-inventory.spec.js', 'staging-journey.spec.js'],
+    : ['staging-smoke.spec.js', 'customer.spec.js', 'operations.spec.js', 'responsive.spec.js', 'accessibility.spec.js', 'ui-inventory.spec.js', 'route-inventory.spec.js', 'staging-journey.spec.js'],
   fullyParallel: false, forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0, workers: 1, timeout: 60000,
   expect: { timeout: 10000 },
