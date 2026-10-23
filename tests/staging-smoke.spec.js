@@ -28,3 +28,8 @@ test('no failed same-origin document navigations on initial page load', async ({
   await openHome(page);
   expect(failed).toEqual([]);
 });
+
+test('homepage does not display raw JavaScript object placeholders', async ({ page }) => {
+  await openHome(page);
+  await expect(page.locator('body')).not.toContainText(/\\[object Object\\]/);
+});
