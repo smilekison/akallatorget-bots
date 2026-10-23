@@ -34,6 +34,7 @@ jobs:
       - name: Run customer, operations, responsive and accessibility browser checks
         run: npx playwright test tests/customer.spec.js tests/operations.spec.js tests/responsive.spec.js tests/accessibility.spec.js tests/navigation.spec.js tests/security-smoke.spec.js
       - name: Record visible UI inventory for selector calibration
+        if: always()
         run: npx playwright test tests/ui-inventory.spec.js tests/route-inventory.spec.js
       - name: Upload test evidence
         if: always()
