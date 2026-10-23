@@ -4,7 +4,7 @@ export class JudgeBot {
   constructor(page) { this.page = page; }
   async visiblePage() {
     await expect(this.page.locator('body')).toBeVisible();
-    const text = (await this.page.locator('body').innerText()).replace(/\\s+/g, ' ').trim();
+    const text = (await this.page.locator('body').innerText()).replace(/\s+/g, ' ').trim();
     expect(text.length, 'Page should contain visible content').toBeGreaterThan(10);
     return text;
   }
