@@ -4,10 +4,10 @@ These checks are black-box browser interactions. Status below reflects completed
 
 | Area | Coverage | Mutation | Current result |
 |---|---|---:|---|
-| Home and core navigation | visible content, menu entry, browser errors | No | **Pass:** 3 staging smoke checks passed |
+| Home and core navigation | visible content, menu entry, browser errors, raw-object placeholder regression | No | **Mostly pass:** baseline smoke checks passed; new `[object Object]` assertion is added and awaits next run |
 | Primary navigation | visible links to menu, lunch, drink, order and account journeys | No | **Pass:** primary navigation assertions passed |
-| Public route health | HTTP response, expected visible content, uncaught browser errors | No | **Failures observed:** `/hitta-hit/`, `/allergener/`, `/integritetspolicy/`, `/cookies/`, `/kopvillkor/` returned HTTP 500 in run 39915170998 |
-| Linked manuals | public link health | No | **Failures observed:** PDF and DOCX manual URLs returned HTTP 404 in run 39915170998 |
+| Public route health | HTTP response, expected visible content, uncaught browser errors | No | **Failures observed:** `/hitta-hit/`, `/allergener/`, `/integritetspolicy/`, `/cookies/`, `/kopvillkor/` returned HTTP 500 in consecutive runs through 39915556524 |
+| Linked manuals | public link health | No | **Failures observed:** PDF and DOCX manual URLs returned HTTP 404 in run 39915556524 |
 | Menu and products | menu discovery, product/add-control discovery | Local basket only | Discovery implemented; localized add-to-basket selectors are being calibrated |
 | Customisation | open options and choose a visible option | Local UI state | Locator calibration pending |
 | Basket and checkout | basket/cart and checkout entry point | Local UI state | Locator calibration pending |
@@ -17,7 +17,7 @@ These checks are black-box browser interactions. Status below reflects completed
 | Kitchen | queue and status-action discovery | Status action only in explicit full journey | Requires dedicated credentials and locator calibration |
 | Responsive layout | mobile/tablet/desktop overflow | No | **Pass:** 3 viewport checks passed |
 | Accessibility heuristics | button names, form labels, image alt, main/H1 | No | **Pass:** 3 heuristic checks passed |
-| Security smoke | HTTPS, mixed content, password-form destination, external target-blank links, public error/secret markers | No | Added; awaiting completed CI result |
+| Security smoke | HTTPS, mixed content, password-form destination, external target-blank links, public error/secret markers | No | **Pass:** 4 security checks passed in run 39915556524 |
 | Production | read-only homepage and menu smoke | No | Requires verified production URL; not run |
 | Internal database consistency | intentionally not accessed | N/A | Out of scope |
 
