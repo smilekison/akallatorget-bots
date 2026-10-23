@@ -9,7 +9,7 @@ export async function openHome(page) {
   await expect(page.locator('body')).not.toBeEmpty();
 }
 export async function bodyText(page) {
-  return (await page.locator('body').innerText()).replace(/\\s+/g, ' ').trim();
+  return (await page.locator('body').innerText()).replace(/\s+/g, ' ').trim();
 }
 export async function clickCandidate(page, names) {
   for (const name of names) {
