@@ -6,7 +6,7 @@ test('production homepage loads with visible content and no uncaught page errors
   page.on('pageerror', error => errors.push(error.message));
   await openHome(page);
   expect((await bodyText(page)).length).toBeGreaterThan(40);
-  expect(page.url()).toMatch(/^https:\\/\\//);
+  expect(new URL(page.url()).protocol).toBe('https:');
   expect(errors).toEqual([]);
 });
 
