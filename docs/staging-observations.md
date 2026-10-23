@@ -1,6 +1,6 @@
 # Staging observations
 
-Last confirmed browser run: GitHub Actions run [39915170998](https://github.com/smilekison/akallatorget-bots/actions/runs/39915170998), 2026-10-23.
+Latest confirmed browser run: GitHub Actions run [39915556524](https://github.com/smilekison/akallatorget-bots/actions/runs/39915556524), 2026-10-23.
 
 These are observations from public HTTP/browser behavior only. The bots do not access application source or databases.
 
@@ -16,9 +16,9 @@ These are observations from public HTTP/browser behavior only. The bots do not a
 | Medium | `/manual/Akalla_Torget_Demo_Test_Guide.pdf` | HTTP 404 | Internal-link check failed |
 | Medium | `/manual/Akalla_Torget_Demo_Test_Guide.docx` | HTTP 404 | Internal-link check failed |
 
-These statuses were returned by the staging host in the run above. Re-run the latest workflow to determine whether they are persistent or transient before closing application issues.
+The latest run reproduced all five HTTP 500 responses and both manual 404 responses. The route-inventory diagnostics ran after assertions failed and captured `An unexpected error occurred.` for each 500 route. These are confirmed repeated observations across consecutive staging CI runs, not a single isolated failure. The application team should inspect server-side error logs for these routes; the black-box bots cannot infer the underlying server exception.
 
-## Test-suite caveats
+## Additional UI observation\n\n- The homepage body text includes a literal `[object Object]` near the hero/contact content. A regression assertion has been added to the staging smoke suite to prevent this placeholder from silently returning.\n\n## Test-suite caveats
 
 - The customer, staff and kitchen suites remain partly conditional because controls and role credentials must be discovered/configured.
 - Full order creation remains disabled by default and must only run against staging with dedicated accounts and a verified simulated-payment path.
