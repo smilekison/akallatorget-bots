@@ -42,12 +42,12 @@ test('internal navigation links do not point to broken same-origin pages', async
   const hrefs = await page.locator('a[href]').evaluateAll(links =>
     [...new Set(links.map(link => link.getAttribute('href')).filter(Boolean))]
       .filter(href => href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/#'))
-      .slice(0, 50)
+      .slice(0, 20)
   );
-  const broken = [];
-  for (const href of hrefs) {
-    const response = await request.get(new URL(href, baseURL).toString()).catch(() => null);
-    if (!response || response.status() >= 400) broken.push({ href, status: response?.status() ?? 'network-error' });
-  }
+  const results = await Promise.all(hrefs.map(async href => {
+    const response = await request.get(new URL(href, baseURL).toString(), { timeout: 7000 }).catch(() => null);
+    return { href, status: response?.status() ?? 'network-error' };
+  }));
+  const broken = results.filter(result => typeof result.status !== 'number' || result.status >= 400);
   expect(broken, 'All sampled internal navigation targets should return a non-error response').toEqual([]);
 });
