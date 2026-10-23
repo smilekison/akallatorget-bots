@@ -8,21 +8,21 @@ test('full customer-to-kitchen journey through visible UI using simulated paymen
     test.skip(!process.env[`${role.toUpperCase()}_EMAIL`] || !process.env[`${role.toUpperCase()}_PASSWORD`],
       `Missing dedicated ${role} test account.`);
   }
-  await openHome(page);
-  await clickCandidate(page, ['menu', 'order', 'food', 'take away']);
-  const add = page.getByRole('button', { name: /add to basket|add to cart|add item/i }).first();
+  await page.goto('/bestall/');
+  await expect(page.locator('body')).toBeVisible();
+  const add = page.getByRole('button', { name: /lägg till|add to basket|add to cart|add item/i }).first();
   if (!await add.isVisible().catch(() => false)) test.skip(true, 'Add-to-basket control not identified; update selectors from screenshot/trace.');
   await add.click();
   await clickCandidate(page, ['basket', 'cart', 'checkout', 'view order']);
   expect((await bodyText(page)).length).toBeGreaterThan(20);
 
-  const demo = page.getByText(/demo payment|simulated payment|test payment/i).first();
+  const demo = page.getByText(/demo.?betalning|simulerad betalning|testbetalning|demo payment|simulated payment|test payment/i).first();
   if (!await demo.isVisible().catch(() => false)) test.skip(true, 'No visible demo/simulated payment option; refusing to submit.');
   await demo.click();
-  const submit = page.getByRole('button', { name: /place order|submit order|confirm order|pay now/i }).first();
+  const submit = page.getByRole('button', { name: /lägg beställning|bekräfta beställning|betala nu|place order|submit order|confirm order|pay now/i }).first();
   if (!await submit.isVisible().catch(() => false)) test.skip(true, 'Order submit control not identified.');
   await submit.click();
-  expect(await bodyText(page)).toMatch(/order|receipt|payment|thank|confirm/i);
+  expect(await bodyText(page)).toMatch(/order|beställning|kvitto|betalning|tack|bekräft/i);
 
   for (const role of ['staff', 'kitchen']) {
     const context = await browser.newContext();
