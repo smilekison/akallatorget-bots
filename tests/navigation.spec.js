@@ -1,0 +1,53 @@
+import { test, expect } from '@playwright/test';
+
+const publicRoutes = [
+  { path: '/', label: /pizza|restaurang|akalla/i },
+  { path: '/meny/pizza/', label: /pizza/i },
+  { path: '/meny/a-la-carte/', label: /à la carte|a la carte|kött|pasta|burgare/i },
+  { path: '/meny/lunch/', label: /lunch/i },
+  { path: '/veckans-tips/', label: /veckans tips|favoriter|köksmästar/i },
+  { path: '/meny/dryck/', label: /dryck|bar|öl|vin/i },
+  { path: '/hitta-hit/', label: /hitta|öppettider|adress|väg/i },
+  { path: '/bestall/', label: /beställ|order|mat|hämt/i },
+  { path: '/konto/', label: /konto|medlem|logga|registr/i },
+  { path: '/allergener/', label: /allergen|specialkost|allergi/i },
+  { path: '/integritetspolicy/', label: /integritet|privacy|personuppgift/i },
+  { path: '/cookies/', label: /cookie|kaka|lagring/i },
+  { path: '/kopvillkor/', label: /köpvillkor|villkor|terms/i }
+];
+
+test('primary navigation exposes core customer journeys', async ({ page }) => {
+  await page.goto('/');
+  for (const label of [/hem/i, /pizza/i, /à la carte/i, /lunch/i, /dryck/i, /hitta hit/i, /beställ online/i]) {
+    await expect(page.getByRole('link', { name: label }).first()).toBeVisible();
+  }
+});
+
+for (const route of publicRoutes) {
+  test(`public route ${route.path} returns a usable page`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+    expect(response, `Expected document response for ${route.path}`).not.toBeNull();
+    expect(response.status(), `Unexpected HTTP status for ${route.path}`).toBeLessThan(400);
+    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('body')).not.toBeEmpty();
+    await expect(page.locator('body')).toContainText(route.label);
+    expect(errors, `Uncaught browser errors on ${route.path}`).toEqual([]);
+  });
+}
+
+test('internal navigation links do not point to broken same-origin pages', async ({ page, request, baseURL }) => {
+  await page.goto('/');
+  const hrefs = await page.locator('a[href]').evaluateAll(links =>
+    [...new Set(links.map(link => link.getAttribute('href')).filter(Boolean))]
+      .filter(href => href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/#'))
+      .slice(0, 50)
+  );
+  const broken = [];
+  for (const href of hrefs) {
+    const response = await request.get(new URL(href, baseURL).toString()).catch(() => null);
+    if (!response || response.status() >= 400) broken.push({ href, status: response?.status() ?? 'network-error' });
+  }
+  expect(broken, 'All sampled internal navigation targets should return a non-error response').toEqual([]);
+});
