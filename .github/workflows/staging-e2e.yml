@@ -1,0 +1,63 @@
+name: Akalla Torget browser bots
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Staging suite
+        type: choice
+        options: [smoke, full]
+        default: smoke
+      confirm_order_creation:
+        description: Explicitly permit creating staging test orders
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 5 * * 1-5"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: akallatorget-bots-staging
+  cancel-in-progress: false
+
+jobs:
+  browser:
+    if: github.event_name == 'schedule' || inputs.suite == 'smoke' || (inputs.suite == 'full' && inputs.confirm_order_creation)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TARGET_ENV: staging
+      STAGING_BASE_URL: https://akallatorget.smilekisan.com
+      ENABLE_STAGING_MUTATIONS: ${{ inputs.suite == 'full' && inputs.confirm_order_creation && 'true' || 'false' }}
+      CUSTOMER_EMAIL: ${{ secrets.E2E_CUSTOMER_EMAIL }}
+      CUSTOMER_PASSWORD: ${{ secrets.E2E_CUSTOMER_PASSWORD }}
+      STAFF_EMAIL: ${{ secrets.E2E_STAFF_EMAIL }}
+      STAFF_PASSWORD: ${{ secrets.E2E_STAFF_PASSWORD }}
+      KITCHEN_EMAIL: ${{ secrets.E2E_KITCHEN_EMAIL }}
+      KITCHEN_PASSWORD: ${{ secrets.E2E_KITCHEN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Staging smoke suite
+        if: github.event_name == 'schedule' || inputs.suite == 'smoke'
+        run: npm run smoke:staging
+      - name: Full staging journey
+        if: inputs.suite == 'full' && inputs.confirm_order_creation
+        run: npm run e2e:staging
+      - name: Upload Playwright evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: akallatorget-staging-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
