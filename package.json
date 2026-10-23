@@ -1,0 +1,24 @@
+{
+  "name": "akallatorget-bots",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent black-box browser bots for Akalla Torget",
+  "scripts": {
+    "test": "playwright test",
+    "smoke:staging": "TARGET_ENV=staging playwright test tests/staging-smoke.spec.js",
+    "smoke:production": "TARGET_ENV=production playwright test tests/production-smoke.spec.js",
+    "e2e:staging": "TARGET_ENV=staging playwright test tests/staging-journey.spec.js",
+    "test:customer": "playwright test tests/customer.spec.js",
+    "test:operations": "playwright test tests/operations.spec.js",
+    "test:responsive": "playwright test tests/responsive.spec.js",
+    "test:a11y": "playwright test tests/accessibility.spec.js",
+    "headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "check": "node --check playwright.config.js && node --check bots/index.js && node --check tests/helpers.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "dotenv": "^16.6.1"
+  }
+}
