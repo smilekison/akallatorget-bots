@@ -13,7 +13,19 @@ const publicRoutes = [
   { path: '/allergener/', label: /allergen|specialkost|allergi/i },
   { path: '/integritetspolicy/', label: /integritet|privacy|personuppgift/i },
   { path: '/cookies/', label: /cookie|kaka|lagring/i },
-  { path: '/kopvillkor/', label: /köpvillkor|villkor|terms/i }
+  { path: '/kopvillkor/', label: /köpvillkor|villkor|terms/i },
+  { path: '/en/', label: /pizza|restaurant|akalla/i },
+  { path: '/en/menu/pizza/', label: /pizza/i },
+  { path: '/en/menu/a-la-carte/', label: /à la carte|a la carte|meat|pasta|burger/i },
+  { path: '/en/menu/lunch/', label: /lunch/i },
+  { path: '/en/menu/drinks/', label: /drinks|bar|beer|wine/i },
+  { path: '/en/find-us/', label: /find us|opening hours|address|directions/i },
+  { path: '/en/order/', label: /order|food|pickup|pick up/i },
+  { path: '/en/account/', label: /account|member|log in|register/i },
+  { path: '/en/allergens/', label: /allergen|special diet|allergy/i },
+  { path: '/en/privacy/', label: /privacy|personal data/i },
+  { path: '/en/cookies/', label: /cookie|storage/i },
+  { path: '/en/terms/', label: /terms|purchase/i }
 ];
 
 test('primary navigation exposes core customer journeys', async ({ page }) => {
